@@ -23,6 +23,7 @@
 ├── /backend              # Código do servidor (Node.js + Express)
 │   ├── /config           # Configurações (db, autenticação, etc)
 │   ├── /controllers      # Lógica de cada funcionalidade (login, registro)
+│   ├── /middlewares      # Verificar se o usuário está logado (autenticação), se ele tem permissão (autorização), etc.
 │   ├── /models           # Modelos do banco (Mongoose + MongoDB)
 │   ├── /routes           # Definição das rotas da API
 │   └── server.js         # Arquivo principal do backend
