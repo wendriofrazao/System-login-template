@@ -14,6 +14,10 @@
 - **Node.js + Express.js** → ambiente de execução JavaScript no servidor e framework para o backend 
 - **JWT (JSON Web Token)** → autenticação baseada em tokens  
 - **Bcrypt.js** → criptografia de senhas para maior segurança
+- **cookie-parser** → middleware para ler e manipular cookies no Express  
+- **cors** → habilita compartilhamento de recursos entre diferentes domínios (CORS)  
+- **nodemailer** → envio de emails pelo Node.js  
+- **nodemon** → reinício automático do servidor durante o desenvolvimento
 
 ## Estrutura do Projeto
 
