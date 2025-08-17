@@ -20,9 +20,31 @@ const userShema = new mongoose.Schema({
         required: [true, 'A senha é obrigatória'],
         minlength: 6,
         maxlength: 15
-    }
+    },
+    verifyOtp: {
+        type: String,
+        default: ''
+    },
+    verifyOtpExpireAt: {
+        type: Number,
+        default: 0
+    },
+    isAccountVerified: {
+        type: Boolean,
+        default: false
+    },
+    resetOtp: {
+        type: String,
+        default: ''
+    },
+    resetOtpExpireAt: {
+        type: Number,
+        default: 0
+    } 
 }, {
     timestamps: true 
 });
 
-module.exports = mongoose.model('user', userShema);
+const userModel = mongoose.models.user || mongoose.model('user', userShema); 
+
+module.exports = userModel;
