@@ -19,7 +19,7 @@
 - **nodemailer** → envio de emails pelo Node.js  
 - **nodemon** → reinício automático do servidor durante o desenvolvimento
 
-## Estrutura do Projeto
+## 📂 Estrutura do Projeto
 
 ```bash
 /System-Login-Template
