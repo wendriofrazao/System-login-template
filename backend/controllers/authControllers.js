@@ -2,7 +2,7 @@ const userModel = require('../model/user.js')
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
-export const register = async (req, res) => {
+const register = async (req, res) => {
     const { name, email, password, confirmpassword } = req.body
 
     // validação
@@ -37,6 +37,8 @@ export const register = async (req, res) => {
 
 }
 
-export const login = async (req, res) => {
+const login = async (req, res) => {
 
 }
+
+module.exports = { register, login };
