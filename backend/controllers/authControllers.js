@@ -64,9 +64,9 @@ const login = async (req, res) => {
         
         const isCoincide = await bcrypt.compare(password, userExist.password)
 
-        if (!isCoincide) return res.status(412).json({message: "Senha inválida"})
+        if (!isCoincide) return res.status(401).json({message: "Senha inválida"})
 
-        // jwt token 
+        // json web token 
         const token = jwt.sign({id: userExist._id}, process.env.JWT_SECRET, {expiresIn: '7d'});
 
         res.cookie('token', token, {
@@ -76,11 +76,16 @@ const login = async (req, res) => {
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
 
-        return res.json({success: true});
+        return res.json({ success: true, user: { id: userExist._id, name: userExist.name, email: userExist.email } });
+
 
     } catch (error) {
         res.json({sucess: false, message: error.message})
     }
 }
 
-module.exports = { register, login };
+const logout = async (req, res) => {
+
+}
+
+module.exports = { register, login, logout };
