@@ -6,8 +6,7 @@ export const register = async (req, res) => {
     const { name, email, password, confirmpassword } = req.body
 
     // validação
-
-    if (!name && !email && ! confirmpassword) res.status(412).json({message: "Os campos não podem ficar vazios. Preencha para prosseguir."}); 
+    if (!name && !email && !password) res.status(412).json({message: "Os campos não podem ficar vazios. Preencha para prosseguir."}); 
 
     if(password !== confirmpassword) return res.status(412).json({message: "Senhas não coincidem."});
 
