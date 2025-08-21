@@ -42,7 +42,7 @@ const register = async (req, res) => {
 
         console.log("Usuário cadastrado com sucesso!");
         
-        return res.status(201).json({message: "Usuário registrado com sucesso!",})
+        return res.status(201).json({success: true, message: "Usuário registrado com sucesso!",})
 
     } catch (error) {
         res.json({sucess: false, message: error.message})
@@ -51,7 +51,36 @@ const register = async (req, res) => {
 }
 
 const login = async (req, res) => {
+    const {email, password} = req.body;
 
+    // validação
+    if (!email || !password) return res.status(400).json({message: "Os campos não podem ficar vazios. Preencha para prosseguir."});
+
+    const userExist = await userModel.findOne({email});
+
+    if (!userExist) return res.status(404).json({message: "Email ou senha inválidos"});
+
+    try {
+        
+        const isCoincide = await bcrypt.compare(password, userExist.password)
+
+        if (!isCoincide) return res.status(412).json({message: "Senha inválida"})
+
+        // jwt token 
+        const token = jwt.sign({id: userExist._id}, process.env.JWT_SECRET, {expiresIn: '7d'});
+
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict', 
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        });
+
+        return res.json({success: true});
+
+    } catch (error) {
+        res.json({sucess: false, message: error.message})
+    }
 }
 
 module.exports = { register, login };
