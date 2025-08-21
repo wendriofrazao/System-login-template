@@ -1,6 +1,10 @@
 const express = require('express');
 const authRouter = express.Router();
 
-const authRegister = () => {
-    
-}
+authRouter.post('register', (req, res) => {
+
+})
+
+authRouter.post('login', (req, res) => {
+
+})
