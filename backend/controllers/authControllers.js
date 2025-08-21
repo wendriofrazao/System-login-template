@@ -1,6 +1,10 @@
-const userModel = require('../model/user.js')
+const userModel = require('../model/user.js');
+const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+
+// dotenv confing
+dotenv.config();
 
 const register = async (req, res) => {
     const { name, email, password, confirmpassword } = req.body
@@ -26,6 +30,15 @@ const register = async (req, res) => {
         })
 
         await registerUser.save()
+
+        const token = jwt.sign({id: registerUser._id}, process.env.JWT_SECRET, {expiresIn: '7d'});
+
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict', 
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        });
 
         console.log("Usuário cadastrado com sucesso!");
         
