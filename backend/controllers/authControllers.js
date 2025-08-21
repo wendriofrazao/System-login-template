@@ -10,14 +10,14 @@ const register = async (req, res) => {
     const { name, email, password, confirmpassword } = req.body
 
     // validação
-    if (!name || !email || !password) return res.status(412).json({message: "Os campos não podem ficar vazios. Preencha para prosseguir."}); 
+    if (!name || !email || !password) return res.status(400).json({message: "Os campos não podem ficar vazios. Preencha para prosseguir."}); 
 
-    if(password !== confirmpassword) return res.status(412).json({message: "Senhas não coincidem."});
+    if(password !== confirmpassword) return res.status(400).json({message: "Senhas não coincidem."});
 
     // verificar se o usuario ja existe
     const userExist = await userModel.findOne({email});
 
-    if (userExist) return res.status(412).json({message: "Email já existente, coloque outro"});
+    if (userExist) return res.status(409).json({message: "Email já existente, coloque outro"});
 
     try {
         
