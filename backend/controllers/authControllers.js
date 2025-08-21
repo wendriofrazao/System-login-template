@@ -45,7 +45,7 @@ const register = async (req, res) => {
         return res.status(201).json({success: true, message: "Usuário registrado com sucesso!",})
 
     } catch (error) {
-        res.json({sucess: false, message: error.message})
+        res.status(500).json({sucess: false, message: error.message})
     }
 
 }
@@ -58,7 +58,7 @@ const login = async (req, res) => {
 
     const userExist = await userModel.findOne({email});
 
-    if (!userExist) return res.status(404).json({message: "Email ou senha inválidos"});
+    if (!userExist) return res.status(401).json({message: "Email ou senha inválidos"});
 
     try {
         
@@ -72,20 +72,31 @@ const login = async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict', 
-            maxAge: 7 * 24 * 60 * 60 * 1000
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000 
         });
 
         return res.json({ success: true, user: { id: userExist._id, name: userExist.name, email: userExist.email } });
 
-
     } catch (error) {
-        res.json({sucess: false, message: error.message})
+        res.status(500).json({success: false, message: error.message})
     }
 }
 
 const logout = async (req, res) => {
+    try {
+        
+        res.clearCookie('token', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict' 
+        })
 
+        return res.json({success: true, message: "Logged Out"})
+
+    } catch (error) {
+        res.status(500).json({success: false, message: error.message})
+    }
 }
 
 module.exports = { register, login, logout };
