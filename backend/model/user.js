@@ -18,8 +18,7 @@ const userShema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, 'A senha é obrigatória'],
-        minlength: 6,
-        maxlength: 15
+        minlength: 6
     },
     verifyOtp: {
         type: String,
