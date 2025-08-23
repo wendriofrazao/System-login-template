@@ -45,7 +45,7 @@ const register = async (req, res) => {
         const emailOption = {
             from: process.env.SENDER_EMAIL,
             to: email,
-            subject: 'Seja bem vindo ✔',
+            subject: 'Seja bem vindo',
             text: `Olá, seja bem-vindo(a)!
 
                 Estamos muito felizes em ter você conosco 🎉
