@@ -134,6 +134,22 @@ const logout = async (req, res) => {
     }
 }
 
+const sendVerifyOtp = async (req, res) => {
+    try {
+          
+        const {userId} = req.body;
 
+        const user = await userModel.findById(userId);
 
-module.exports = { register, login, logout };
+        if (user.isAccountVerified) {
+           return res.json({success: false, message: "conta já verificada"})
+        }
+
+        const otp = String(Math.floor(100000 + Math.random() * 900000))
+
+    } catch (error) {
+        res.status(500).json({success: false, message: error.message})
+    }
+}
+
+module.exports = { register, login, logout, sendVerifyOtp };
