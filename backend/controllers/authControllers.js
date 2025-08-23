@@ -1,4 +1,5 @@
 const userModel = require('../model/user.js');
+const transporter = require('../configs/nodemailer.js')
 const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
@@ -39,6 +40,38 @@ const register = async (req, res) => {
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict', 
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
+
+        // enviar email
+        const emailOption = {
+            from: process.env.SENDER_EMAIL,
+            to: email,
+            subject: 'Seja bem vindo ✔',
+            text: `Olá, seja bem-vindo(a)!
+
+                Estamos muito felizes em ter você conosco 🎉
+
+                Agora você já pode acessar sua conta e aproveitar todos os nossos recursos.
+
+                Qualquer dúvida, estamos à disposição!
+
+                Sua conta foi criada com o email id: ${email}
+
+                Equipe System Login`,
+            html: `
+                    <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+                        <h2 style="color: #4CAF50;">🎉 Seja bem-vindo(a)!</h2>
+                        <p>Olá, estamos muito felizes em ter você conosco.</p>
+                        <p>Agora você já pode acessar sua conta e aproveitar todos os nossos recursos.</p>
+                        <p style="margin-top: 20px;">Qualquer dúvida, estamos à disposição!</p>
+                        <hr style="margin: 30px 0;">
+                        <p style="font-size: 12px; color: #888;">
+                           Este é um e-mail automático. Por favor, não responda diretamente a esta mensagem.
+                        </p>
+                    </div>
+                   `
+        }
+
+        await transporter.sendMail(emailOption);
 
         console.log("Usuário cadastrado com sucesso!");
         
