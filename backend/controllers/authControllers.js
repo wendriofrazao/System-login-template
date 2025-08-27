@@ -72,7 +72,7 @@ const register = async (req, res) => {
         }
 
      transporter.sendMail(emailOption, (err, info) => {
-        err ? console.error("Erro ao enviar email:", err) :  console.log("Email enviado:", info.response)
+        err ? console.error("Erro ao enviar email:", err) : console.log("Email enviado:", info.response)
      });
 
         console.log("Usuário cadastrado com sucesso!");
