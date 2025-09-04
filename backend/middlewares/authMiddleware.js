@@ -11,11 +11,21 @@ const token = req.cookies;
   }
 
   try {
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; 
+
+    if (decoded.id) {
+      req.body.userId = decoded.id 
+    } else {
+    return res.status(401).json({ success: false, message: "Não autorizado. Faça o Login novamente" });
+    } 
+
     next();
+
   } catch (err) {
-    return res.status(401).json({ message: "Token inválido ou expirado" });
+
+    return res.status(401).json({ success: false, message: "Token inválido ou expirado" });
+
   }
 }
 
