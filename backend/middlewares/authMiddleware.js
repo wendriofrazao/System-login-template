@@ -4,10 +4,10 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const authMiddleware = (req, res, next) => {
-const token = req.cookies.token;
+const token = req.cookies;
 
   if (!token) {
-    return res.status(401).json({ message: "Token não fornecido" });
+    return res.status(401).json({ success: false , message: "Token não fornecido" });
   }
 
   try {

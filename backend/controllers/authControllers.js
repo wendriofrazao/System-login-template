@@ -197,6 +197,9 @@ const verifyEmail = async (req, res) => {
 
         await user.save();
 
+        return res.status(200).json({success: true, message: 'Email verificado com sucesso!'})
+
+
     } catch (error) {
         return res.status(500).json({success: false, message: error.message});
     }
