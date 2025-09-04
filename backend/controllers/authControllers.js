@@ -183,7 +183,7 @@ const verifyEmail = async (req, res) => {
             return res.status(404).json({success: false, message: 'Usuário não encontrados'})
         }
 
-        if (user.verifyOtp === '' || user.verifyOtp !== otps) {
+        if (user.verifyOtp === '' || user.verifyOtp !== otp) {
             return res.status(401).json({success: false, message: 'OTP inválido'});
         }
 
