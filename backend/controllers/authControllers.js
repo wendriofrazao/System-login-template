@@ -229,7 +229,7 @@ const sendResetOTP = async (req, res) => {
         const user = await userModel.findOne({email});
 
         if (!user) {
-        return res.status(404).json({success: false, message: 'Usuário não encontrado'});
+            return res.status(404).json({success: false, message: 'Usuário não encontrado'});
         }
 
         const otp = String(Math.floor(100000 + Math.random() * 900000));
@@ -243,7 +243,7 @@ const sendResetOTP = async (req, res) => {
             from: process.env.SENDER_EMAIL,
             to: user.email,
             subject: 'Redefinição de senha OTP',
-            text: `Seu OTP foi resetado ${otp}. verifique se sua conta está usando esse OTP`,
+            text: `Seu OTP foi resetado, sua senha ${otp}. Use este OTP para procedir com o resete da senha`,
         }
  
         await transporter.sendMail(mailOption);
@@ -256,4 +256,44 @@ const sendResetOTP = async (req, res) => {
 
 }
 
-module.exports = { register, login, logout, sendVerifyOtp, verifyEmail, isAuthenticated, sendResetOTP };
+const resetPassword = async (req, res) => {
+
+    const { email, otp, newPassword } = req.body;
+
+    try {
+        
+        if (!email || !otp || !newPassword) {
+            return res.status(400).json({success: false, message: 'campos não preenchidos ou não correspondidos'});
+        }
+
+        const user = await userModel.findOne({email});
+
+        if (!user) {
+            return res.status(404).json({success: false, message: 'Usuário não encontrado'});
+        }
+
+        if (user.resetOtp === '' || user.resetOtp !== otp) {
+            return res.status(401).json({success: false, message: 'OTP inválido'});
+        }
+
+        if (user.resetOtpExpireAt < Date.now()) {
+            return res.status(401).json({success: false, message: 'OTP expirou'});
+        }
+
+        const hashPassword = await bcrypt.hash(newPassword, 10);
+
+        user.password = hashPassword;
+        user.resetOtp = '';
+        user.resetOtpExpireAt = 0;
+
+        await user.save();
+
+        return res.status(200).json({success: true, message: 'Senha atualizada com sucesso!'});
+
+    } catch (error) {
+        return res.status(500).json({success: false, message: error.message});
+    }
+
+}
+
+module.exports = { register, login, logout, sendVerifyOtp, verifyEmail, isAuthenticated, sendResetOTP, resetPassword };
