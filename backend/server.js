@@ -3,7 +3,8 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const connectionDB = require('./configs/db.js')
 const dotenv = require('dotenv');
-const authRouter = require('./routes/authRoute.js')
+const authRouter = require('./routes/authRoute.js');
+const userRouter = require('./routes/userRouter.js');
 
 // config dotenv
 dotenv.config();
@@ -20,6 +21,7 @@ app.use(cors({credentials: true}))
 
 // routes
 app.use('/api/auth', authRouter);
+app.use('/api/user', userRouter);
 
 
 app.listen(process.env.PORT, () => {
