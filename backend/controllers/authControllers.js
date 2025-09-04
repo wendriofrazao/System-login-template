@@ -161,7 +161,7 @@ const sendVerifyOtp = async (req, res) => {
  
         await transporter.sendMail(mailOption);
 
-        res.status(200).json({success: true, message: 'Verificação do OTP enviada por email'})
+        res.status(200).json({success: true, message: 'Verificação do OTP enviada por email'});
 
     } catch (error) {
         res.status(500).json({success: false, message: error.message})
@@ -172,7 +172,7 @@ const verifyEmail = async (req, res) => {
     const {userId, otp} = req.body;
 
     if (!userId || !otp) {
-        return res.status(400).json({success: false, message: 'Falta de detalhes'})
+        return res.status(400).json({success: false, message: 'Falta de detalhes'});
     }
 
     try {
@@ -180,7 +180,7 @@ const verifyEmail = async (req, res) => {
         const user = await userModel.findById(userId);
 
         if (!user) {
-            return res.status(404).json({success: false, message: 'Usuário não encontrados'})
+            return res.status(404).json({success: false, message: 'Usuário não encontrados'});
         }
 
         if (user.verifyOtp === '' || user.verifyOtp !== otp) {
@@ -188,7 +188,7 @@ const verifyEmail = async (req, res) => {
         }
 
         if (user.verifyOtpExpireAt < Date.now()) {
-            return res.status(401).json({success: false, message: 'OTP expirou'})
+            return res.status(401).json({success: false, message: 'OTP expirou'});
         }
 
         user.isAccountVerified = true;
@@ -197,7 +197,7 @@ const verifyEmail = async (req, res) => {
 
         await user.save();
 
-        return res.status(200).json({success: true, message: 'Email verificado com sucesso!'})
+        return res.status(200).json({success: true, message: 'Email verificado com sucesso!'});
 
 
     } catch (error) {
@@ -205,4 +205,55 @@ const verifyEmail = async (req, res) => {
     }
 }
 
-module.exports = { register, login, logout, sendVerifyOtp, verifyEmail };
+const isAuthenticated = async (req, res) => {
+    
+    try {
+        
+        return res.status(200).json({success: true});
+
+    } catch (error) {
+        return res.status(500).json({success: false, message: error.message});
+    }
+
+}
+
+const sendResetOTP = async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        return res.status(404).json({success: false, message: 'O email é obrigatório'});
+    }
+
+    try {
+
+        const user = await userModel.findOne({email});
+
+        if (!user) {
+        return res.status(404).json({success: false, message: 'Usuário não encontrado'});
+        }
+
+        const otp = String(Math.floor(100000 + Math.random() * 900000));
+
+        user.resetOtp = otp;
+        user.resetOtpExpireAt = Date.now() + 15 * 60 * 1000;
+
+        await user.save();
+
+        const mailOption = {
+            from: process.env.SENDER_EMAIL,
+            to: user.email,
+            subject: 'Redefinição de senha OTP',
+            text: `Seu OTP foi resetado ${otp}. verifique se sua conta está usando esse OTP`,
+        }
+ 
+        await transporter.sendMail(mailOption);
+
+        res.status(200).json({success: true, message: 'Verificação do OTP enviada por email'});
+
+    } catch (error) {
+        return res.status(500).json({success: false, message: error.message});
+    }
+
+}
+
+module.exports = { register, login, logout, sendVerifyOtp, verifyEmail, isAuthenticated, sendResetOTP };
