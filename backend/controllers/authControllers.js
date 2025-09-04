@@ -142,14 +142,64 @@ const sendVerifyOtp = async (req, res) => {
         const user = await userModel.findById(userId);
 
         if (user.isAccountVerified) {
-           return res.json({success: false, message: "conta já verificada"})
+           return res.status(202).json({success: false, message: "conta já verificada"});
         }
 
-        const otp = String(Math.floor(100000 + Math.random() * 900000))
+        const otp = String(Math.floor(100000 + Math.random() * 900000));
+
+        user.verifyOtp = otp;
+        user.verifyOtpExpireAt = Date.now() + 24 * 60 * 60 * 1000;
+
+        await user.save();
+
+        const mailOption = {
+            from: process.env.SENDER_EMAIL,
+            to: user.email,
+            subject: 'Verificação de conta OTP',
+            text: `Seu OTP é ${otp}. verifique se sua conta está usando esse OTP`,
+        }
+ 
+        await transporter.sendMail(mailOption);
+
+        res.status(200).json({success: true, message: 'Verificação do OTP enviada por email'})
 
     } catch (error) {
         res.status(500).json({success: false, message: error.message})
     }
 }
 
-module.exports = { register, login, logout, sendVerifyOtp };
+const verifyEmail = async (req, res) => {
+    const {userId, otp} = req.body;
+
+    if (!userId || !otp) {
+        return res.status(400).json({success: false, message: 'Falta de detalhes'})
+    }
+
+    try {
+        
+        const user = await userModel.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({success: false, message: 'Usuário não encontrados'})
+        }
+
+        if (user.verifyOtp === '' || user.verifyOtp !== otps) {
+            return res.status(401).json({success: false, message: 'OTP inválido'});
+        }
+
+        if (user.verifyOtpExpireAt < Date.now()) {
+            return res.status(401).json({success: false, message: 'OTP expirou'})
+        }
+
+        user.isAccountVerified = true;
+        user.verifyOtp = '';
+        user.verifyOtpExpireAt = 0;
+
+        await user.save();
+
+    } catch (error) {
+        return res.status(500).json({success: false, message: error.message});
+    }
+}
+
+module.exports = { register, login, logout, sendVerifyOtp, verifyEmail };
