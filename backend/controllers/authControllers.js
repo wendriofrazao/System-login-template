@@ -137,9 +137,13 @@ const logout = async (req, res) => {
 const sendVerifyOtp = async (req, res) => {
     try {
           
-        const {userId} = req.body;
+        const { email } = req.body;
 
-        const user = await userModel.findById(userId);
+        const user = await userModel.findOne({ email });
+
+        if (!user) {
+        return res.status(404).json({ error: 'Usuário não encontrado' });
+        }
 
         if (user.isAccountVerified) {
            return res.status(202).json({success: false, message: "conta já verificada"});
@@ -169,15 +173,15 @@ const sendVerifyOtp = async (req, res) => {
 }
 
 const verifyEmail = async (req, res) => {
-    const {userId, otp} = req.body;
+    const {email, otp} = req.body;
 
-    if (!userId || !otp) {
+    if (!email || !otp) {
         return res.status(400).json({success: false, message: 'Falta de detalhes'});
     }
 
     try {
         
-        const user = await userModel.findById(userId);
+        const user = await userModel.findOne({email});
 
         if (!user) {
             return res.status(404).json({success: false, message: 'Usuário não encontrados'});

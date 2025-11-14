@@ -1,26 +1,9 @@
 
+
+
 export const WelcomeApp = () => {
     return (
-            <div className="min-h-screen flex flex-col bg-gray-50 text-gray-800">
-      {/* Navbar */}
-      <nav className="bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-          <h1 className="text-xl font-bold text-blue-600">MyWebsite</h1>
-          <ul className="flex space-x-6">
-            <li>
-              <a href="#" className="hover:text-blue-600 transition-colors">
-                Home
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:text-blue-600 transition-colors">
-                About
-              </a>
-            </li>
-            
-          </ul>
-        </div>
-      </nav>
+    <div className="min-h-screen flex flex-col bg-gray-50 text-gray-800">
 
       {/* Main content */}
       <main className="flex-grow flex flex-col justify-center items-center text-center px-6">
@@ -29,7 +12,7 @@ export const WelcomeApp = () => {
           Esta é uma página inicial simples feita com React e Tailwind CSS.
           Rápida, responsiva e moderna.
         </p>
-        <button className="mt-8 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+        <button className=" cursor-pointer mt-8 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
           Começar
         </button>
       </main>
