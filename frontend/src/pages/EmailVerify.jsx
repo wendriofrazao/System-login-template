@@ -1,16 +1,15 @@
 import React, { useState } from "react";
-import { AuthHooks } from "../hooks/AuthHooks";
 import { useNavigate, useLocation } from "react-router-dom";
+import { AuthService } from "../service/authService.jsx";
+
+const authService = new AuthService();
 
 export function VerifyEmail() {
-
   const [code, setCode] = useState(["","","","","",""]);
   const [message, setMessage] = useState("");
 
-  const userVerify = new AuthHooks();
   const navigate = useNavigate();
   const location = useLocation();
-
   const email = new URLSearchParams(location.search).get("email");
 
   const handleChange = (value, index) => {
@@ -21,13 +20,12 @@ export function VerifyEmail() {
     }
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     const otp = code.join("");
 
     try {
-      const res = await userVerify.VerifyAccount(email, otp);
+      const res = await authService.verifyEmail(email, otp);
 
       if (!res.success) {
         setMessage(res.message || "Código inválido");
@@ -35,17 +33,17 @@ export function VerifyEmail() {
       }
 
       setMessage("Conta verificada com sucesso!");
-      setTimeout(() => navigate("/"), 1000);
+      setTimeout(() => navigate("/login"), 1000);
 
-    } catch (error) {
+    } catch (err) {
       setMessage("Erro ao verificar conta");
     }
   };
 
   return (
     <div className="flex flex-col min-h-screen items-center justify-center bg-gray-50">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md text-center" >
-        
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md text-center">
+
         <h1 className="text-2xl font-bold text-gray-800 mb-3">Verificação de E-mail</h1>
         <p className="text-gray-600 mb-6">Digite o código enviado para <b>{email}</b>.</p>
 
@@ -56,24 +54,22 @@ export function VerifyEmail() {
                 key={i}
                 type="text"
                 value={digit}
-                onChange={(e) => handleChange(e.target.value, i)}
                 maxLength="1"
+                onChange={(e) => handleChange(e.target.value, i)}
                 className="w-12 h-12 text-center text-lg border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
               />
             ))}
           </div>
 
-          <button 
-            type="submit" 
-            className=" cursor-pointer w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+          <button
+            type="submit"
+            className="cursor-pointer w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
           >
             Verificar
           </button>
         </form>
 
-        { message && (
-          <p className="mt-4 text-green-600">{message}</p>
-        )}
+        {message && <p className="mt-4 text-green-600">{message}</p>}
 
       </div>
     </div>

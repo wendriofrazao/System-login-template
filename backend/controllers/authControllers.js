@@ -107,7 +107,7 @@ const login = async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000 
         });
 
@@ -300,4 +300,23 @@ const resetPassword = async (req, res) => {
 
 }
 
-module.exports = { register, login, logout, sendVerifyOtp, verifyEmail, isAuthenticated, sendResetOTP, resetPassword };
+const profile = async (req, res) => {
+  try {
+    const user = await userModel.findById(req.user.id).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "Usuário não encontrado" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      user,
+      isAccountVerified: user.isAccountVerified
+    });
+
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+module.exports = { profile, register, login, logout, sendVerifyOtp, verifyEmail, isAuthenticated, sendResetOTP, resetPassword };

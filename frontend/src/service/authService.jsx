@@ -1,6 +1,18 @@
 const API_AUTH = "http://localhost:5000/api/auth";
 
+
 export class AuthService {
+
+    async getProfile() {
+        const res = await fetch(`${API_AUTH}/profile`, {
+            method: "GET",
+            credentials: "include"
+        });
+
+        const data = await res.json();
+
+        return data;
+    }
 
     // ====== registro ======
     async register(name, email, password, confirmpassword) {

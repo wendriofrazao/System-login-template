@@ -1,8 +1,9 @@
 import React from "react";
 import { useState } from "react";
-import { AuthHooks } from "../hooks/AuthHooks";
+import { AuthService } from "../service/authService.jsx";
 import { useNavigate } from "react-router-dom";
-import { VerifyEmail } from "./EmailVerify";
+
+const authService = new AuthService();
 
 export function Register() {
 
@@ -11,37 +12,35 @@ export function Register() {
     const [password, setPassword] = useState("");
     const [confirmpassword, setConfirmpassword] = useState("");
     const [message, setMessage] = useState("");
-    const navigator = useNavigate();
 
-    const User = new AuthHooks();
+    const navigator = useNavigate();
 
     const handleSubmit = async (event) => {
 
         event.preventDefault();
 
-    try {
-        const datas = await User.Registration(name, email, password, confirmpassword);
+        try {
+          // 1. registrar
+          const res = await authService.register(name, email, password, confirmpassword);
 
-        if (datas.success) {
-            setMessage("Conta criada com sucesso!");
-            setTimeout(() => {
-                navigator(`/email-verify?email=${email}`);
-            }, 1000);
-        } else {
-            setMessage(datas.message || "Erro desconhecido");
+          if (!res.success) {
+            setMessage(res.message || "Erro no registro");
+            return;
+          }
+
+          // 2. enviar OTP
+          await authService.sendVerifyOtp(email);
+
+          setMessage("Conta criada! Verifique seu email.");
+          setTimeout(() => {
+            navigator(`/email-verify?email=${email}`);
+          }, 1000);
+
+        } catch (err) {
+          console.error(err);
+          setMessage("Erro no servidor");
         }
-
-        const sendOtp = await User.SendOtp(email);
-        
-        if (sendOtp?.success) {
-          console.log("Otp enviado no email");
-        } 
-
-    } catch (error) {
-        console.error("Erro no registro:", error);
-        setMessage("Falha na conexão ou erro no servidor");
       }
-    }
 
 
   return (
