@@ -4,7 +4,6 @@ const cors = require('cors');
 const connectionDB = require('./configs/db.js')
 const dotenv = require('dotenv');
 const authRouter = require('./routes/authRoute.js');
-const userRouter = require('./routes/userRouter.js');
 
 // config dotenv
 dotenv.config();
@@ -24,7 +23,6 @@ app.use(cors({
 
 // routes
 app.use('/api/auth', authRouter);
-app.use('/api/user', userRouter);
 
 
 app.listen(process.env.PORT, () => {
