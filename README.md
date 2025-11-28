@@ -43,4 +43,29 @@
 │
 ├── tests/
 ├── package.json 
-└── README.md 
+└── README.md
+```
+
+## 🚀 Como baixar e rodar localmente
+
+1. Clone o repositório  
+   ```bash
+   git clone https://github.com/wendriofrazao/System-login-template.git
+   ```
+2. Acesse a pasta do projeto
+    ```bash
+   cd System-login-template
+   ```
+3. Instale as dependências e rode o backend
+    ```bash
+   cd backend
+   npm install
+   # configurar variáveis de ambiente se necessário (ex: URI do MongoDB, secret JWT etc.)
+   npm run dev     # ou node server.js
+   ```
+4. Instale as dependências e rode o frontend
+    ```bash
+   cd ../frontend
+   npm install
+   npm run dev  
+   ```
