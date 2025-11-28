@@ -24,23 +24,23 @@
 ```bash
 /System-Login-Template
 │
-├── /backend              # Código do servidor (Node.js + Express)
-│   ├── /config           # Configurações (db, autenticação, etc)
-│   ├── /controllers      # Lógica de cada funcionalidade (login, registro)
-│   ├── /middlewares      # Verificar se o usuário está logado (autenticação), se ele tem permissão (autorização), etc.
-│   ├── /models           # Modelos do banco (Mongoose + MongoDB)
-│   ├── /routes           # Definição das rotas da API
-│   └── server.js         # Arquivo principal do backend
+├── backend/ # Código do servidor (Node.js + Express)
+│ ├── config/ # Configurações (banco, autenticação, variáveis de ambiente etc.)
+│ ├── controllers/ # Lógica das funcionalidades (login, register etc.)
+│ ├── middlewares/ # Middlewares (ex: checagem de token, autorização, validação)
+│ ├── models/ # Modelos do banco (Mongoose + MongoDB)
+│ ├── routes/ # Definição das rotas da API
+│ └── server.js 
 │
-├── /frontend             # Interface do usuário (React.js)
-│   ├── /public           # Arquivos públicos (index.html, favicon, etc)
-│   ├── /src
-│   │   ├── /components   # Componentes reutilizáveis (Form, Input, Button)
-│   │   ├── /pages        # Páginas principais (Login, Register)
-│   │   ├── /services     # Conexão com API (fetch/axios)
-│   │   ├── App.js        # Configuração principal do React
-│   │   └── index.js      # Ponto de entrada do React
+├── frontend/ # Interface do usuário (React.js + Vite e Tailwind)
+│ ├── public/
+│ └── src/ # Código fonte React
+│ ├── components/ 
+│ ├── pages/ # 
+│ ├── services/ # Serviços de comunicação com a API (fetch/axios, chamadas HTTP)
+│ ├── App.jsx 
+│ └── index.jsx 
 │
-├── /tests                # Testes unitários e de integração
-├── package.json          # Dependências do projeto
-└── README.md             # Documentação principal
+├── tests/
+├── package.json 
+└── README.md 
