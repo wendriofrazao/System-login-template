@@ -10,7 +10,7 @@
 ## 💻 Tecnologias
 
 - **MongoDB + Mongoose** → banco de dados e ODM para modelagem de dados   
-- **React.js + Vite** → biblioteca para criar a interface do usuário  
+- **React.js + Vite e Tailwind** → biblioteca para criar a interface do usuário e um framework de estilização
 - **Node.js + Express.js** → ambiente de execução JavaScript no servidor e framework para o backend 
 - **JWT (JSON Web Token)** → autenticação baseada em tokens  
 - **Bcrypt.js** → criptografia de senhas para maior segurança
