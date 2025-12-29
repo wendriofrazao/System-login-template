@@ -20,25 +20,23 @@ export function Register() {
         event.preventDefault();
 
         try {
-          // 1. registrar
-          const res = await authService.register(name, email, password, confirmpassword);
+         
+        const res = await authService.register(name, email, password, confirmpassword);
 
           if (!res.success) {
             setMessage(res.message || "Erro no registro");
             return;
           }
 
-          // 2. enviar OTP
-          await authService.sendVerifyOtp(email);
+          setMessage("Conta criada com sucesso!.");
 
-          setMessage("Conta criada! Verifique seu email.");
           setTimeout(() => {
-            navigator(`/email-verify?email=${email}`);
+            navigator("/login");
           }, 1000);
 
         } catch (err) {
           console.error(err);
-          setMessage("Erro no servidor");
+          setMessage(err.message);
         }
       }
 
@@ -121,7 +119,7 @@ export function Register() {
         </form>
 
         { message && (
-            <p className={`mt-2  ${ message ? "text-green-600" : "text-red-600"  }`}>
+            <p className={`mt-2  ${ message.error ? "text-red-600" : "text-green-600"  }`}>
                 {message}
             </p>
         ) }

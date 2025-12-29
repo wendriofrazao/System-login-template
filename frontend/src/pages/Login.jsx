@@ -1,8 +1,11 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState} from "react";
 import { useAuth } from "../hooks/AuthHooks.jsx";
 import { useNavigate } from "react-router-dom";
+import { AuthService } from "../service/authService.jsx";
 
+
+const authService = new AuthService();
 
 export function Login() {
   const [email, setEmail] = useState("");
@@ -10,12 +13,9 @@ export function Login() {
   const [message, setMessage] = useState("");
   const [type, setType] = useState("success");
 
-  const { user, login } = useAuth();
+  const { login, resetOtp } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (user) navigate("/dashboard");
-  }, [user]);
 
   async function handleOnSubmit(e) {
     e.preventDefault();
@@ -27,16 +27,47 @@ export function Login() {
         setType("success");
         setMessage("Login feito com sucesso!");
 
-        setTimeout(() => navigate("/dashboard"), 800);
       } else {
         setType("error");
         setMessage(data.message || "Credenciais inválidas");
       }
 
+      // enviar OTP
+      await authService.sendVerifyOtp(email);
+        setTimeout(() => {
+            navigate(`/email-verify?email=${email}`);
+        }, 500);
+
     } catch (error) {
       setType("error");
       setMessage(error.message || "Erro ao logar.");
     }
+  }
+
+  async function handleOtp(event) {
+    event.preventDefault();
+
+    try {
+
+      const getEmail = await authService.getProfile()
+      const Email = getEmail.user.email;
+      console.log(Email);
+      const otp = await resetOtp(Email);
+
+      if (otp.success) {
+        setType("success");
+        setMessage("será redirecionado para trocar sua senha!");
+        setTimeout(() => navigate("/reset-password"), 1000);
+      } else {
+        setType("error");
+        setMessage(data.message || "Tente novamente!");
+      }
+      
+    } catch (error) {
+      setType("error");
+      setMessage(error.message || "Erro ao trocar de senha.");
+    }
+
   }
 
   return (
@@ -91,6 +122,15 @@ export function Login() {
           <a href="/register" className="text-blue-600 font-medium hover:underline">
             Registrar-se
           </a>
+        </p>
+        <p className="text-center text-sm text-gray-600 mt-2">
+          <button
+            type="button"
+            onClick={handleOtp}
+            className="text-blue-600 font-medium hover:underline"
+          >
+            esqueci a senha
+          </button>
         </p>
       </div>
     </div>

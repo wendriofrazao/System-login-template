@@ -39,21 +39,42 @@ export function AuthProvider({ children }) {
     return await authService.verifyEmail(email, otp);
   }
 
+  async function resetOtp(email) {
+    return await authService.resetOtp(email);
+  }
+
   // Recarregar usuário no carregamento da página
   useEffect(() => {
-    async function loadUser() {
-      try {
-        const data = await authService.getProfile();
-        if (data.success) setUser(data.user);
-      } catch (_) {
+  let isMounted = true;
+
+  async function loadUser() {
+    try {
+      const data = await authService.getProfile();
+
+      if (isMounted && data?.success && data.user) {
+        setUser(data.user);
+      } else if (isMounted) {
         setUser(null);
-      } finally {
+      }
+    } catch (error) {
+      if (isMounted) {
+        console.warn("Falha ao carregar usuário:", error.message);
+        setUser(null);
+      }
+    } finally {
+      if (isMounted) {
         setLoading(false);
       }
     }
+  }
 
-    loadUser();
-  }, []);
+  loadUser();
+
+  return () => {
+    isMounted = false;
+  };
+}, []);
+
 
   return (
     <AuthContext.Provider 
@@ -65,6 +86,7 @@ export function AuthProvider({ children }) {
         register,
         sendVerifyOtp,
         verifyEmail,
+        resetOtp
       }}
     >
       {children}

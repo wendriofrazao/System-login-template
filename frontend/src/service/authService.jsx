@@ -4,14 +4,23 @@ const API_AUTH = "http://localhost:5000/api/auth";
 export class AuthService {
 
     async getProfile() {
-        const res = await fetch(`${API_AUTH}/profile`, {
-            method: "GET",
-            credentials: "include"
-        });
+        try {
+            const res = await fetch(`${API_AUTH}/profile`, {
+                method: "GET",
+                credentials: "include",
+            });
 
-        const data = await res.json();
+                const data = await res.json();
 
-        return data;
+            if (!res.ok) {
+                throw new Error(data.message || `Erro ${res.status}`);
+            }
+
+            return data;
+        } catch (error) {
+            console.error("Erro em pegar perfil:", error);
+            throw error;
+        }
     }
 
     // ====== registro ======
@@ -133,6 +142,62 @@ export class AuthService {
                 headers: { "Content-Type": "application/json" },
                 credentials: 'include',
                 body: JSON.stringify({email, otp})
+            })
+
+             const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || `Erro ${response.status}`);
+            }
+
+             return data;
+
+        } catch (error) {
+            console.error("Erro no AuthService.sendVerifyOtp:", error);
+            throw error;
+        }
+
+    }
+
+
+    // ==== resetar otp =====
+     async resetOtp(email) {
+
+        try {
+            
+            const response = await fetch(`${API_AUTH}/reset-otp`, {
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                credentials: 'include',
+                body: JSON.stringify({email})
+            })
+
+             const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || `Erro ${response.status}`);
+            }
+
+             return data;
+
+        } catch (error) {
+            console.error("Erro no AuthService.sendVerifyOtp:", error);
+            throw error;
+        }
+
+    }
+
+
+    // ==== verificar conta =====
+     async resetPassword(email, otp, newPassword) {
+
+        try {
+            
+            const response = await fetch(`${API_AUTH}/reset-password`, {
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                credentials: 'include',
+                body: JSON.stringify({email, otp, newPassword})
             })
 
              const data = await response.json();

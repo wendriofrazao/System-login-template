@@ -22,7 +22,7 @@ export const AuthRoutes = () => {
                </ProtectedRoute> 
                 } />
             <Route path="/email-verify" element={<VerifyEmail/>} />
-            <Route path="/email-reset" element={<ResetPassword/>} />
+            <Route path="/reset-password" element={<ResetPassword/>} />
         </Routes>
 
     )

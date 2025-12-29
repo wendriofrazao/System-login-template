@@ -33,7 +33,7 @@ export function VerifyEmail() {
       }
 
       setMessage("Conta verificada com sucesso!");
-      setTimeout(() => navigate("/login"), 1000);
+      setTimeout(() => navigate("/dashboard"), 500);
 
     } catch (err) {
       setMessage("Erro ao verificar conta");
